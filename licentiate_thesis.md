@@ -119,7 +119,9 @@ J. A. Haustein$^\dagger$, **I. Arnekvist**$^\dagger$, J. A. Stork, K. Hang, D. K
 
 In this paper we propose how to learn and integrate a policy and a generative model into a sampling-based motion planning algorithm. The ultimate goal of the algorithm is to rearrange a number of objects into a user-specified configuration. The number of objects can vary, and also the number of fixed and movable obstacles in the scene. See for example \figref{the_thing_below_todo}.
 
-<img src="/Users/isacar/Desktop/abc.png" alt="abc" style="zoom: 50%;" /><img src="/Users/isacar/Desktop/dual_slalom.png" alt="dual_slalom" style="zoom: 50%;" />
+
+
+<img src="figures/abc.png" alt="abc" style="zoom: 50%;" /><img src="figures/dual_slalom.png" alt="dual_slalom" style="zoom: 50%;" />
 
 We integrate these parts in steps, starting with the learning of the policy. The policy is trained to push a single object in an obstacle-free environment by minimization of the expected distance $J$ to a goal. The policy is only allowed one action, making it a simpler-to-solve bandit problem rather than the full RL-problem. The outcome will, however, be largely dependent on where the robot is placed relative to the object. By having access to $J$ as a function of the initial robot state $J(s_r)$, we can sample robot states according to $p(s_r) \propto e^{-\lambda J(s_r)}$ with a temperature-parameter $\lambda$ using MCMC. This distribution has its modes where $J$ is minimized, making it more likely to sample good robot states, while still allowing for exploration. This exploration is crucial for the full rearrangement problem since then robot states might be blocked by obstacles. We further propose how to efficiently sample these states using a generative adversarial network (GAN) instead of inefficient MCMC-sampling.
 
@@ -149,7 +151,7 @@ Many MDPs in RL can be seen as related by just varying one or a few parameters. 
 
 In this work, we propose to optimize the evidence lower bound (ELBO) to jointly learn Q-functions over MDP/policy pairs, and an approximate posterior over low-dimensional MDP parameterizations that is unobserved. The single learned "master" Q-function then encompasses all the observed MDPs by specifying the corresponding learned parameterization, $z$ , as an additional argument. This master Q-function can now provide deterministic policy gradients for any $z$, allowing us to learn a single master policy that switches behavior depending on the value of $z$. Given an unseen test-MDP, we can perform optimization only in the low-dimensional space of $z$, rather than the policy's full parameter space. The process is visualized if \figref{below}.
 
-<img src="/Users/isacar/Library/Application Support/typora-user-images/Screen Shot 2020-03-11 at 11.56.08.png" alt="Screen Shot 2020-03-11 at 11.56.08" style="zoom: 50%;" />
+<img src="figures/vae_overview.png" style="zoom: 50%;" />
 
 We evaluate this method on a pendulum swing-up problem to see that we can generalize to new MDP instances. The unobserved low-dimensional space consists of the pendulum length and the relative cost to actuate the joint. We illustrate the learned posterior over $z$ to qualitatively assess how well the underlying parameterization was learned. We also evaluated the method for transferring policies learned in simulation on a pushing task, to a similar task on the real robot. This showed that we can successfully learn a policy in a new, but related, MDP in a handful of trials.
 
@@ -178,11 +180,11 @@ In this paper, we show that small target variance ($<1$) along with momentum opt
 
 We continue by deriving analytical gradients for a ReLU-activated linear regression model with normally distributed inputs. Using these expressions, we could conclude the presence of two cones in parameter space: a *linear cone* and a *dead cone*, see \figref{below}. In the linear cone we show that parameters evolve as in a linear autonomous system, including oscillations when we use momentum optimization \cite{}. In the dead cone gradients approach zero exponentially fast, resulting in a sub-optimal saddle point where parameters converge.
 
-![image-20200311095859535](/Users/isacar/Library/Application Support/typora-user-images/image-20200311095859535.png)
+![image-20200311095859535](figures/cones.png)
 
 Small variances of targets imply that the global optimum in parameter space approaches the point where these cones meet. We show with numerical examples that parameters in this case evolves either into the dead cone, or into the linear cone where oscillations then push the parameters into the dead cone. As target variance decrease, and momentum increases, a majority of parameter initializations converge in the dead cone, see \figref{below}.
 
-<img src="/Users/isacar/Library/Application Support/typora-user-images/Screen Shot 2020-03-11 at 10.11.13.png" alt="Screen Shot 2020-03-11 at 10.11.13" style="zoom: 25%;" />
+<img src="figures/dying_regions.png" style="zoom: 25%;" />
 
 #### Contributions
 
